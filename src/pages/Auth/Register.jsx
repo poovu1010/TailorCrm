@@ -3,6 +3,7 @@ import AuthDetails from "../../context/AuthContext";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import Signup from "./Signup";
+import axios from "axios";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -70,17 +71,23 @@ const Register = () => {
   };
   // let data = JSON.stringify(input)
 
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
 
     let demo = validate();
     if (Object.keys(demo).length == 0) {
-      (manageAuthData({
-        FullName: input.FullName,
-        Email: input.Email,
-        Password: input.Password,
-      }),
-        toast.success("registered"));
+      // (manageAuthData({
+      //   FullName: input.FullName,
+      //   Email: input.Email,
+      //   Password: input.Password,
+      // }),
+
+      const res =await axios.post("http://localhost:3000/register", {
+        input
+      });
+      console.log(res.data.data.input);
+     
+      toast.success(res.data.message)
 
       setTimeout(() => {
         navigate("/login");
@@ -107,7 +114,7 @@ const Register = () => {
             Sign up to get started!
           </p>
 
-          <form className="flex flex-col gap-1 mt-8">
+          <form className="flex flex-col gap-1 mt-8" >
             {/* Full Name */}
             <div className="flex flex-col gap-1">
               <label htmlFor="fullName" className="text-sm font-medium">
@@ -220,6 +227,7 @@ const Register = () => {
             {/* Sign Up Button */}
             <button
               type="submit"
+              onClick={submit}
               className="bg-purple-600 text-white py-3 rounded-lg font-medium mt-4 hover:bg-purple-700 transition"
             >
               Sign Up
@@ -231,11 +239,8 @@ const Register = () => {
         <div className="p-5 pb-8 text-center">
           <p className="text-gray-600">
             Already have an account?
-            
             <span className="text-purple-600 font-medium ml-1 cursor-pointer">
               <Link to={"/login"}> Login</Link>
-             
-              
             </span>
           </p>
         </div>
